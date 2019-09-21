@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+<<<<<<< HEAD
 #include <algorithm>
 #include <vector>
 
@@ -24,4 +25,21 @@ int main() {
   if(s == 0) ans--;
   printf("%d\n", ans);
   return 0;
+=======
+
+int brute_force(int* arr, int s, int sum) {
+  if(s == sum) return 1;
+  else {
+    
+  }
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  int N, s, sum, i;
+  cin>>N>>s;
+  int arr[N];
+  for(i=0; i<N; i++) cin>>arr[i];
+  
+>>>>>>> 846ffa99965671b9d4e41fe526372401e315d70e
 }
