@@ -1,6 +1,7 @@
 /*
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -14,13 +15,11 @@ int main() {
 		arr[i] = i;
 	}
 	int n;
+	vector<int> v;
 	for (int i = 1; i <= N; i++) {
 		cin >> n;
-
-
 	}
 
 	return 0;
 }
-
 */

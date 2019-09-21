@@ -1,7 +1,6 @@
-/*
 #include <stdio.h>
 #include <iostream>
-#include <vector>
+#include <deque>
 #include <algorithm>
 
 using namespace std;
@@ -16,7 +15,7 @@ int main() {
 		cin >> n;
 		getchar();
 		char a = 'A';
-		vector<int> v;
+		deque<int> q;
 		while ((a = getchar()) != '\n') {
 			int sum = 0, num = a - '0';
 			if (num > 0 && num <= 9) {
@@ -33,42 +32,51 @@ int main() {
 				}
 			}
 			if (!sum)continue;
-			v.push_back(sum);
+			q.push_back(sum);
 		}
 
-		vector<int>::iterator it;
-
-		int id = 0;
+		int idx = 0;
 		bool check = true;
-		while (p[id] != '\0') {
-			char a = p[id];
+		bool rev = false;
+		while (p[idx] != '\0') {
+			char a = p[idx];
 			if (a == 'R') {
-				reverse(v.begin(), v.end());
+				if (rev) rev = false;
+				else rev = true;
 			}
 			else {
-				if (v.empty()) {
+				if (q.empty()) {
 					check = false;
 					break;
 				}
-				it = v.begin();
-				it = v.erase(it);
+				if (rev) q.pop_back();
+				else q.pop_front();
 			}
-			id++;
+			idx++;
 		}
 
 		if (check) {
 			printf("[");
-			for (it = v.begin(); it != v.end() - 1; it++) {
-				printf("%d,", *it);
+			if (q.empty()) printf("]\n");
+			else {
+				int siz = q.size();
+				if (rev) {
+					for (int i = 0; i < siz - 1; i++) {
+						printf("%d,", q.back());
+						q.pop_back();
+					}
+				}
+				else {
+					for (int i = 0; i < siz - 1; i++) {
+						printf("%d,", q.front());
+						q.pop_front();
+					}
+				}
+				printf("%d]\n", q.front());
 			}
-			printf("%d]\n", *it);
 		}
-		else {
-			printf("error\n");
-		}
-
+		else printf("error\n");
 	}
 
 	return 0;
 }
-*/
