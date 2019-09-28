@@ -18,7 +18,7 @@ int main() {
     for(int j=0; j<M; j++) {
       cin>>temp;
       point[i][j] = 0;
-      chk[N][M] = temp-'0';
+      chk[i][j] = temp-'0';
     }
   }
   point[0][0] = 1;
