@@ -22,7 +22,11 @@ int main(){
 		arr2.push_back(temp);
 	}
 	for(int i=0;i<m;i++){
-		cout << upper_bound(arr.begin(), arr.end(), arr2[i]) - lower_bound(arr.begin(), arr.end(), arr2[i]) << " ";
+		vector<int>::iterator upper = upper_bound(arr.begin(), arr.end(), arr2[i]);
+		vector<int>::iterator lower = lower_bound(arr.begin(), arr.end(), arr2[i]);
+		cout<<*upper<<" "<<*lower<<" ";
+	
+	//	cout << upper_bound(arr.begin(), arr.end(), arr2[i]) - lower_bound(arr.begin(), arr.end(), arr2[i]) << " ";
 	}
 	return 0;
 }
