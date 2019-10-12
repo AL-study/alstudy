@@ -1,4 +1,5 @@
 
+
 #include <cstdio>
 #include <queue>
 using namespace std;
@@ -17,7 +18,9 @@ int bfs() {
     q.push({0, 0, 0});
     dist[0][0][0] = 1;
     while (!q.empty()) {
-        int x = q.front().x, y = q.front().y, w = q.front().w;
+        int x = q.front().x, 
+        y = q.front().y, 
+        w = q.front().w;
         q.pop();
         if (x == n-1 && y == m-1) return dist[x][y][w];
         for (int i=0; i<4; i++) {
@@ -29,7 +32,6 @@ int bfs() {
                 q.push({nx, ny, w});
             }
             if (a[nx][ny] == 1 && w == 0) {
-                // Break the wall, and turn on the flag to 1.
                 dist[nx][ny][1] = dist[x][y][w] + 1;
                 q.push({nx, ny, 1});
             }
