@@ -118,6 +118,88 @@
 
 
 
+### 13305. 주유소
+
+- 전형적인 그리디 문제. 다음 도시의 연료값이 더 싸다면 다음 연료를 주유해주고 min값을 갱신
+
+- 싸지 않다면 현재 min값 * edge(도시간 거리) 만큼을 ans(결과값)에 더함
+
+- 범위가 1,000,000,000이기 때문에 ans값은 long long형으로 선언
+
+- ```c++
+  #include <iostream>
+  #include <climits> // INT_MAX 사용
+  using namespace std;
+  int n,edge[100001],ver[100001];
+  long long ans,minnum=INT_MAX;
+  int main(){
+  	cin>>n;
+  	for(int i=0;i<n-1;i++){
+  		cin>>edge[i];
+  	}
+  	for(int i=0;i<n;i++){
+  		cin>>ver[i];
+  		if(minnum>ver[i]){
+  			minnum=ver[i];
+  			ans+=minnum*edge[i];
+  		}else{
+  			ans+=minnum*edge[i];
+  		}
+  	}
+  	cout<<ans;
+  }
+  ```
+
+
+
+### 1826. 연료 채우기 ★
+
+현재위치를 계속 바꿔나가면서 여러 요소들을 고려하다 보니 예외사항(반례)에 많이 막혔다. 힙을 이용한 그리디문제. 구글링해보니 DP, 2개의 힙을 이용하신 분 등등 다양한 풀이법이 존재했다.
+
+- 힙을 이용해 그리디하게 접근 할 경우
+
+  - 주유소의 정보를 받아 거리를 기준으로 sorting한 뒤 내가 현재 갈 수 있는 거리내에 있는 모든 주유소의 데이터를 우선순위 큐에 push
+  - 이후 그리디하게 갈 수 있는 주유소중 가장 큰 연료량을 가지는 주유소를 선택
+
+- ```c++
+  #include <iostream>
+  #include <vector>
+  #include <algorithm>
+  #include <queue>
+  using namespace std;
+  int n,l,p,ans,now,maxnum,idx,i;
+  vector<pair <int, int > > v;
+  priority_queue<int> pq;
+  int main(){
+  	cin>>n;
+  	for(int i=0;i<n;i++){
+  		int temp1,temp2;
+  		cin>>temp1>>temp2;
+  		v.push_back({temp1,temp2});
+  	}
+  	cin>>l>>p;
+  	sort(v.begin(),v.end());
+  	while (p < l) {
+          while (v[i].first <= p) {
+              if (i == n)break;
+              pq.push(v[i].second);
+              i++;
+          }
+          if (!pq.size())break;
+          ans++;
+          p += pq.top();
+          pq.pop();
+      }
+      if(p>=l){
+      	cout<<ans;
+  	}else{
+  		cout<<-1;
+  	}
+  } 
+  ```
+
+
+
 
 
 # 보너스 문제 (BOJ 15595 정답 비율 계산하기)
@@ -136,7 +218,9 @@ A. https://www.acmicpc.net/problem/15595
 
 (~~그냥 방법이 알고 싶었을 뿐인데....~~) 그렇게 문제를 풀게 되었다. 
 
+문제에 들어가면 정답 비율을 어떻게 계산하는지 바로 알 수 있다. 정답 비율 = (문제를 맞은 사람의 수) / (문제를 맞은 사람의 수 + (문제를 맞은 각 사람이 그 문제를 맞기 전까지 틀린 횟수의 총 합)) × 100 
 
+즉 정답 비율은 오로지 문제를 맞힌 사람에 한에서만 영향을 미치며, 정답 비율이 낮을수록 문제를 푼 사람이 많은 시행착오를 겪었다는 뜻으로 해석 할 수 있다.
 
 ### 주의사항
 
