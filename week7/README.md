@@ -116,6 +116,8 @@
   } 
   ```
 
+
+
 ### 13305. 주유소
 
 - 전형적인 그리디 문제. 다음 도시의 연료값이 더 싸다면 다음 연료를 주유해주고 min값을 갱신
@@ -149,6 +151,52 @@
   ```
 
 
+
+### 1826. 연료 채우기 ★
+
+현재위치를 계속 바꿔나가면서 여러 요소들을 고려하다 보니 예외사항(반례)에 많이 막혔다. 힙을 이용한 그리디문제. 구글링해보니 DP, 2개의 힙을 이용하신 분 등등 다양한 풀이법이 존재했다.
+
+- 힙을 이용해 그리디하게 접근 할 경우
+
+  - 주유소의 정보를 받아 거리를 기준으로 sorting한 뒤 내가 현재 갈 수 있는 거리내에 있는 모든 주유소의 데이터를 우선순위 큐에 push
+  - 이후 그리디하게 갈 수 있는 주유소중 가장 큰 연료량을 가지는 주유소를 선택
+
+- ```c++
+  #include <iostream>
+  #include <vector>
+  #include <algorithm>
+  #include <queue>
+  using namespace std;
+  int n,l,p,ans,now,maxnum,idx,i;
+  vector<pair <int, int > > v;
+  priority_queue<int> pq;
+  int main(){
+  	cin>>n;
+  	for(int i=0;i<n;i++){
+  		int temp1,temp2;
+  		cin>>temp1>>temp2;
+  		v.push_back({temp1,temp2});
+  	}
+  	cin>>l>>p;
+  	sort(v.begin(),v.end());
+  	while (p < l) {
+          while (v[i].first <= p) {
+              if (i == n)break;
+              pq.push(v[i].second);
+              i++;
+          }
+          if (!pq.size())break;
+          ans++;
+          p += pq.top();
+          pq.pop();
+      }
+      if(p>=l){
+      	cout<<ans;
+  	}else{
+  		cout<<-1;
+  	}
+  } 
+  ```
 
 
 
