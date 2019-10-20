@@ -3,13 +3,12 @@
 #include <cstring>
 #include <map>
 using namespace std;
-int result,ansnum,answnum;
+int ansnum,answnum;
 map <string ,pair<int,int> > m;
 
 int main(){
 	int n;
 	cin>>n;
-	
 	string nam;
 	for(int i=0; i<n;i++){
 		string pn,name;

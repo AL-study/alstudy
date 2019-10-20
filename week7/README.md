@@ -116,6 +116,40 @@
   } 
   ```
 
+### 13305. 주유소
+
+- 전형적인 그리디 문제. 다음 도시의 연료값이 더 싸다면 다음 연료를 주유해주고 min값을 갱신
+
+- 싸지 않다면 현재 min값 * edge(도시간 거리) 만큼을 ans(결과값)에 더함
+
+- 범위가 1,000,000,000이기 때문에 ans값은 long long형으로 선언
+
+- ```c++
+  #include <iostream>
+  #include <climits> // INT_MAX 사용
+  using namespace std;
+  int n,edge[100001],ver[100001];
+  long long ans,minnum=INT_MAX;
+  int main(){
+  	cin>>n;
+  	for(int i=0;i<n-1;i++){
+  		cin>>edge[i];
+  	}
+  	for(int i=0;i<n;i++){
+  		cin>>ver[i];
+  		if(minnum>ver[i]){
+  			minnum=ver[i];
+  			ans+=minnum*edge[i];
+  		}else{
+  			ans+=minnum*edge[i];
+  		}
+  	}
+  	cout<<ans;
+  }
+  ```
+
+
+
 
 
 
@@ -136,7 +170,9 @@ A. https://www.acmicpc.net/problem/15595
 
 (~~그냥 방법이 알고 싶었을 뿐인데....~~) 그렇게 문제를 풀게 되었다. 
 
+문제에 들어가면 정답 비율을 어떻게 계산하는지 바로 알 수 있다. 정답 비율 = (문제를 맞은 사람의 수) / (문제를 맞은 사람의 수 + (문제를 맞은 각 사람이 그 문제를 맞기 전까지 틀린 횟수의 총 합)) × 100 
 
+즉 정답 비율은 오로지 문제를 맞힌 사람에 한에서만 영향을 미치며, 정답 비율이 낮을수록 문제를 푼 사람이 많은 시행착오를 겪었다는 뜻으로 해석 할 수 있다.
 
 ### 주의사항
 
