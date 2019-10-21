@@ -200,6 +200,82 @@
 
 
 
+### 1422. 숫자의 신
+
+정렬하는 과정을 그리디적인 방식으로 접근해 푼 문제다. 정렬방식이 까다롭고, 반례가 많아 생각을 많이 해봐야한다. 정답 비율도 적은데 푼 사람 자체가 적어 질문 검색에도 반례가 제시되어 있지 않았다. 오로지 혼자 생각해서 풀어야했는데 반나절정도 걸렸다. (~~다음생엔 천재로 태어나자~~)
+
+- 문제를 읽어보면 알다싶이 1이상 100,000,000이하의 자연수를 합쳐야 하기 때문에 string으로 해결해야 한다.
+
+- ```c++
+  #include <iostream>
+  #include <algorithm>
+  #include <sstream>
+  using namespace std;
+  int k,n;
+  string str[1001];
+  string ans;
+  /* 
+  	정렬시 숫자가 높은 순으로 정렬합니다. 
+  	길이가 다르다면 길이가 작은 수는 그 수의 첫자리부터 반복해서 복사해 추가합니다.
+  	ex) 98422 와 97의 비교 => 98422와 97979의 비교
+  */ 
+  bool compare(string a,string b){
+  	int i=0;
+  	string tempa="";
+  	string tempb="";
+  	while(i<a.length()||i<b.length()){
+  		if(i>=a.length()){
+  			tempa+=a[i%a.length()];
+  		}else{
+  			tempa+=a[i];
+  		}
+  		if(i>=b.length()){
+  			tempb+=b[i%b.length()];
+  		}else{
+  			tempb+=b[i];
+  		}
+  		i++;
+  	}
+  	if(tempa==tempb){
+  		return a+b>b+a;
+  	}else{
+  		return tempa>tempb;
+  	}
+  }
+  int main(){
+  	cin>>k>>n;
+  	string num[k];
+  	int gon=0,idx=0;
+  	for(int i=0;i<k;i++){
+  		cin>>num[i];
+  	}
+  	sort(num,num+k,compare);
+  	if(n==k){
+  		for(int i=0;i<k;i++){
+  			ans+=num[i];
+  		}
+  	}else{
+  		for(int i=0;i<k;i++){
+  			if(gon<atoi(num[i].c_str())){
+  				gon=atoi(num[i].c_str());
+  				idx=i;
+  			}
+  		}
+  		for(int i=0;i<k;i++){
+  			if(i==idx){
+  				for(int j=0;j<n-k;j++){
+  					stringstream s;
+  					s<<gon;
+  					ans+=s.str();
+  				}
+  			}
+  			ans+=num[i];
+  		}
+  	}
+  	cout<<ans;
+  }
+  ```
+
 
 
 # 보너스 문제 (BOJ 15595 정답 비율 계산하기)
@@ -281,8 +357,7 @@ int main(){
 
 
 
-
-
 ### 느낀점
 
-- 
+- 그리디 문제를 풀때마다 느끼는 거지만 쉬운 문제는 바로바로 풀리는데 여러 알고리즘을 응용한 문제는 어려워 생각을 많이 해야 풀린다. (전부다 그렇겠지만...)
+- 우선순위 큐, 조건부 string 정렬등 많은 알고리즘이 응용되어 나올 수 있고, 이 때 예외처리를 잘 해야주어야 한다. 반례를 많이 생각해보고 반례가 없다면 예외처리에 대해 다시 고민해보자.
