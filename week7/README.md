@@ -264,6 +264,7 @@
   		for(int i=0;i<k;i++){
   			if(i==idx){
   				for(int j=0;j<n-k;j++){
+                      // 버전문제로 to_string(int value)가 안먹혀서 sstream을 이용했다.
   					stringstream s;
   					s<<gon;
   					ans+=s.str();
