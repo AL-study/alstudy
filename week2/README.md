@@ -125,6 +125,58 @@
 
 
 
+### 1967. 숨바꼭질
+
+- BFS를 이용해 K값을 최소 횟수로 찾는 문제
+
+- 정해진 깊이가 없기 때문에 DFS를 이용하면 무한루프 발생
+
+- -1 , +1, x2 총 3가지 경우의 수 존재
+
+- 이미 탐색했다면 다시 탐색할 필요가 없음
+
+- ```c++
+  #include <iostream>
+  #include <queue>
+  #include <vector>
+  
+  using namespace std;	
+  int n,k,check[200001];
+  queue<int> q;
+  void bfs(int start){
+  	q.push(start);
+  	check[start]=0;
+  	while(!q.empty()){
+  		int x=q.front();
+  		q.pop();
+  		if(x==k){
+  			cout<<check[k];
+  			return;
+  		}
+          //(0<=x-1 && !check[x-1])의 순서를 바꾸면 런타임 에러 발생
+          //배열값의 범위를 먼저 확인한 이후 배열값을 참조해야 한다.
+  		if(0<=x-1 && !check[x-1]){
+  			q.push(x-1);
+  			check[x-1]=check[x]+1;
+  		}
+  		if(x+1 <= 200000 && !check[x+1]){
+  			q.push(x+1);
+  			check[x+1]=check[x]+1;
+  		}
+  		if(x*2 <=200000 && !check[x*2]){
+  			q.push(x*2);
+  			check[x*2]=check[x]+1;
+  		}
+  	}
+  } 
+  int main(){	
+  	cin>>n>>k;
+  	bfs(n);
+  }
+  ```
+
+ 
+
 ### 느낀점
 
 - 백트래킹의 기본 개념과 관련 백준 문제들을 풀어보면서 DFS와 BFS의 개념을 어느정도 잡은 것 같다.
