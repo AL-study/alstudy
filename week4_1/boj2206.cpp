@@ -5,33 +5,42 @@
 
 using namespace std;
 
-int N, M, cnt = 0;
-bool brk = false;
+int N, M;
+bool brk = false, chk = false;
 queue<pair<int, int> > route;
-vector<vector<int> > map, visited;
+vector<vector<int> > map, visited, moving;
 
 
 void bfs() {
   route.push(make_pair(0,0));
+  visited[0][0] = 1;
+  moving[0][0] = 1;
   int dx[4] = {0, 1, 0, -1}, dy[4] = {1, 0, -1, 0};
   while(!route.empty()) {
     pair<int, int> curr = route.front();
-    route.pop();
     int x = curr.first, y = curr.second;
-    if(visited[x][y]) continue;
-    if(brk && map[x][y]) continue;
-    else if(map[x][y]) brk = true;
-    visited[x][y] = 1;
+    route.pop();
+    cout<<x<<" "<<y<<"\n";
+    if(map[x][y]) continue;
     if(x == N-1 && y == M-1) {
-      printf("%d\n", cnt);
+      printf("%d\n", moving[x][y]);
       return;
     }
     for(int i=0; i<4; i++) {
-      if(x + dx[i] >= 0 && x + dx[i] < N && y + dy[i] >= 0 && y + dy[i] < M) {
-        route.push(make_pair(x+dx[i], y+dy[i]));
+      int nx = x+dx[i], ny = y+dy[i];
+      if(nx >= 0 && nx < N && ny >= 0 && y < M) {
+        if(visited[nx][ny] == 0) {
+          if(visited[nx][ny]) {
+            chk = true;
+            map[nx][ny] = 0;
+          }
+          route.push(make_pair(nx, ny));
+          visited[nx][ny] = 1;
+          moving[nx][ny] = moving[x][y] + 1;
+        }
       }
     }
-    cnt++;
+    if(chk) brk = true;
   }
   printf("-1\n");
 }
@@ -47,6 +56,7 @@ int main() {
     row.clear();
     row.assign(M,0);
     visited.push_back(row);
+    moving.push_back(row);
   }
   for(int i=0; i<N; i++) {
     row.clear();
