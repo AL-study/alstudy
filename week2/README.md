@@ -177,6 +177,60 @@
 
  
 
+### 15686. 치킨거리 (삼성 SW역량 기출문제)
+
+- 남겨야하는 치킨집의 수에 따라 해당 치킨집의 위치와 집의 위치를 저장해 완전탐색으로 최소의 거리를 더함
+
+- **순열이 아닌 조합**을 통한 백트래킹 기법
+
+- ```c++
+  #include <iostream>
+  #include <algorithm>
+  #include <vector>
+  #include <climits>
+  using namespace std;
+  int n,m,c,result=INT_MAX;
+  vector<pair<int,int> > home, chicken;
+  vector<int> v;
+  int main(){
+  	cin>>n>>m;
+  	int arr[n][n];
+  	for(int i=0;i<n;i++){
+  		for(int j=0;j<n;j++){
+  			cin>>arr[i][j];
+  			if(arr[i][j]==2){
+  				c++;
+  				chicken.push_back({i,j});
+  			}else if(arr[i][j] == 1){
+  				home.push_back({i,j});
+  			}
+  		}
+  	}
+      //조합을 이용하기 위해 치킨집의 개수만큼 1을 push해준다.
+  	for(int i=0;i<c-m;i++){
+  		v.push_back(0);
+  	}
+  	for(int i=0;i<m;i++){
+  		v.push_back(1);
+  	}
+  	do{
+  		int ans=0;
+  		for(int i=0;i<home.size();i++){
+  			int minnum=INT_MAX;
+  			for(int j=0;j<chicken.size();j++){
+  				if(v[j]) minnum=min(minnum,abs(home[i].first-chicken[j].first)+abs(home[i].second-chicken[j].second));
+  			}
+  			ans+=minnum;
+  		}
+  		result=min(ans,result);
+  	}while(next_permutation(v.begin(),v.end()));
+  	cout<<result;
+  	return 0;
+  }
+  ```
+
+  
+
 ### 느낀점
 
 - 백트래킹의 기본 개념과 관련 백준 문제들을 풀어보면서 DFS와 BFS의 개념을 어느정도 잡은 것 같다.
