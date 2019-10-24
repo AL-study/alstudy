@@ -229,6 +229,144 @@
   }
   ```
 
+
+
+
+### 2636. 치즈 ★
+
+- 치즈가 모두 녹았는지 확인하고 모두 녹았다면 true를 반환하고 해당 개수를 출력 (전부다 녹기전 마지막 순간의 치즈 수)
+
+- 모두 녹지 않은 경우, BFS를 통해 공기가 존재하는 칸에 공기표시
+
+- BFS를 한 번 더 돌려 치즈가 녹을 지점을 표시. 이때 PREAIR(녹을 지점)로 상태 변경
+
+- PREAIR상태의 치즈가 녹아야 하므로 PREAIR를 AIR로 상태 변경
+
+- 상태를 알기 쉽게 enum을 이용하여 변경
+
+- bfs를 2번 돌려야 하는 문제
+
+- ```C++
+  #include <iostream>
+  #include <queue>
+  #include <cstring>
+  using namespace std;
+  
+  typedef struct
+  {
+      int y, x;
+  }Dir;
+  
+  Dir moveDir[4] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+  
+  enum{CHEESE=1, PREAIR, AIR};
+  int N, M;
+  int lastCnt;
+  int arr[100][100];
+  bool visited[100][100];
+  bool allClear(void)
+  {
+      int cnt = 0;
+      for(int i=0; i < N; i++){
+      	for(int j = 0; j < M; j++){
+          	if (arr[i][j] == CHEESE){
+              	cnt++;
+  			}
+  		}
+  	}
+      if (cnt){
+      	lastCnt = cnt;
+  	}
+      return cnt ? false : true;
+  
+  }
+  //BFS2()에서 표시한 칸을 공기로 바꾸는 과정
+  void PreairToAir(void){
+      for (int i = 0; i < N; i++){
+      	for (int j = 0; j < M; j++){
+          	if (arr[i][j] == PREAIR){
+          		arr[i][j] = AIR;
+  			}
+  		}
+  	}
+  }
+  
+  //공기를 표시하는 과정
+  void BFS1(void){
+  
+      memset(visited, 0, sizeof(visited));
+      queue<pair<int, int> > q;
+      q.push({ 0, 0 });
+      while (!q.empty()){
+          int y = q.front().first;
+          int x = q.front().second;
+          q.pop();
+          for (int i = 0; i < 4; i++){
+              int nextY = y + moveDir[i].y;
+              int nextX = x + moveDir[i].x;
+              if(0<=nextY && nextY < N && 0 <= nextX && nextX < M)
+              if (!visited[nextY][nextX] && (!arr[nextY][nextX] || arr[nextY][nextX] == 3)){
+                  arr[nextY][nextX] = AIR;
+                  q.push({ nextY, nextX });
+                  visited[nextY][nextX] = true;
+              }
+          }
+      }
+  }
+  //곧 녹을 치즈를 표시하는 과정
+  void BFS2(void){
+      memset(visited, 0, sizeof(visited));
+      queue<pair<int, int> > q;
+      q.push({ 0, 0 });
+  	while (!q.empty()){
+          int y = q.front().first;
+          int x = q.front().second;
+          q.pop();
+          for (int i = 0; i < 4; i++){
+              int nextY = y + moveDir[i].y;
+              int nextX = x + moveDir[i].x;
+              if (0 <= nextY && nextY < N && 0 <= nextX && nextX < M && !visited[nextY][nextX]){
+                  if (arr[nextY][nextX] == AIR){
+                      q.push({ nextY, nextX });
+                      visited[nextY][nextX] = true;
+                  }
+                  //곧 녹을 치즈를 표시하는 과정
+                  if (arr[y][x] == AIR && arr[nextY][nextX] == CHEESE){
+                      arr[nextY][nextX] = PREAIR;
+                      q.push({ nextY, nextX });
+                      visited[nextY][nextX] = true;
+                  }
+              }
+          }
+      }
+  }
+  
+  int main(void){
+      ios_base::sync_with_stdio(0);
+      cin.tie(0);
+      cin >> N >> M;
+      for (int i = 0; i < N; i++){
+          for (int j = 0; j < M; j++){
+              cin >> arr[i][j];
+  		}
+  	}
+      int result = 0;
+      while(1){
+          if (allClear())
+          break;
+          BFS1();
+          BFS2();
+          PreairToAir();
+          result++;
+      }
+      cout << result << "\n";
+      cout << lastCnt << "\n";
+      return 0;
+  }
+  ```
+
+- #### 참고 출처 : <https://jaimemin.tistory.com/1032>
+
   
 
 ### 느낀점
@@ -236,3 +374,5 @@
 - 백트래킹의 기본 개념과 관련 백준 문제들을 풀어보면서 DFS와 BFS의 개념을 어느정도 잡은 것 같다.
 - 개념이 어렵게 느껴지진 않았지만 막상 구현을 해보니 생각보다 어렵게 느껴졌다. 많은 연습이 필요하다.
 - DP나 정렬 등 접근 방법을 알면 빠르게 (적은 코드 양으로) 풀 수 있는 문제와는 달리 백트래킹은 생각보다 많은 구현량을 요구한다. 개념과 구현이 익숙해 질 때 까지 다양한 유형의 문제를 풀어보자.
+- **2636 치즈**문제가 BFS연습에 매우 좋은 문제였다. 다양한 상태를 위해 enum을 활용하여 배열탐색을 통해 bfs를 2번 돌려서 풀어야 하는 문제였는데 어떻게 접근해야할지 많은 생각을 하게했다. 
+
