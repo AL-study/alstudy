@@ -2,13 +2,11 @@
 #include <algorithm>
 #include <vector>
 #include <climits>
-
 using namespace std;
 int n,m,c,result=INT_MAX;
 vector<pair<int,int> > home, chicken;
 vector<int> v;
 int main(){
-	
 	cin>>n>>m;
 	int arr[n][n];
 	for(int i=0;i<n;i++){

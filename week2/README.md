@@ -231,8 +231,9 @@
 
 
 
-
 ### 2636. 치즈 ★
+
+치즈의 가운데 부분이 비어있지않고 속이 꽉 찬 완전한 치즈였다면 어렵지 않게 풀었을 것이다. 그러나 속이 빈 치즈 즉, 1로 둘러싸인 배열 안에 0이 존재할 경우 치즈 안쪽도 녹아 없어져버린다. 이 부분을 어떻게 해결해야할지 방법이 떠오르지 않아서 참고출처의 코드를 참고 했다. 알고리즘은 다음과 같다.
 
 - 치즈가 모두 녹았는지 확인하고 모두 녹았다면 true를 반환하고 해당 개수를 출력 (전부다 녹기전 마지막 순간의 치즈 수)
 
@@ -244,7 +245,9 @@
 
 - 상태를 알기 쉽게 enum을 이용하여 변경
 
-- bfs를 2번 돌려야 하는 문제
+- bfs를 2번 돌려야 하는 문제 (출처의 방식대로 코딩한다면)
+
+  - 처음 공기는 0이고 1안에 있는 0을 탐색하지 않기 위함
 
 - ```C++
   #include <iostream>
@@ -367,6 +370,105 @@
 
 - #### 참고 출처 : <https://jaimemin.tistory.com/1032>
 
+그러나 여러 번 고민을 한 결과 BFS를 2번 쓰지 않아도 문제를 풀 수 있었다. 문제는 바깥쪽의 1만 PREAIR로 바꾸는 것이기 때문에 굳이 모든 배열을 탐색할 필요가 없다. 따라서 1을 탐색했다면 PUSH해 다음 배열을 탐색하지 않고 1을 PREAIR로 상태변경만 해주면 1번의 BFS로도 문제를 풀 수 있으며, 탐색횟수 또한 효율적으로 줄일 수 있다.
+
+- ```c++
+  #include <iostream>
+  #include <queue>
+  #include <cstring>
+  using namespace std;
+  //애초에 AIR를 0으로 선언해 낭비를 줄인다.
+  enum{
+  	AIR=0,
+  	CHEESE,
+  	PREAIR
+  };
+  int l,c,arr[100][100],lastcnt,result;
+  bool check[100][100];
+  typedef struct{
+  	int x,y;
+  }Dir;
+  Dir movedir[4]={{1,0},{-1,0},{0,1},{0,-1}};
+  
+  bool possible(){
+  	int cnt=0;
+  	for(int i=0;i<l;i++){
+  		for(int j=0;j<c;j++){
+  			if(arr[i][j]==CHEESE){
+  				cnt++;
+  			}
+  		}
+  	}
+  	if(cnt){
+  		lastcnt=cnt;
+  	}
+  	if(cnt==0){
+  		return true;
+  	}else{
+  		return false;
+  	}
+  }
+  
+  void makeair(){
+  	for(int i=0;i<l;i++){
+  		for(int j=0;j<c;j++){
+  			if(arr[i][j]==PREAIR){
+  				arr[i][j]=AIR;
+  			}
+  		}
+  	}
+  }
+  
+  void bfs(){
+  	// 방문배열 초기화 
+  	memset(check,0,sizeof(check));
+  	queue< pair<int, int> > q;
+  	q.push({0,0});
+  	while(!q.empty()){
+  		int xx=q.front().first, yy=q.front().second;
+  		q.pop();
+  		for(int i=0;i<4;i++){
+  			int mx=xx+movedir[i].x;
+  			int my=yy+movedir[i].y;
+  			if(0<=mx&&mx<l&&0<=my&&my<c&&!check[mx][my]){
+  				if(arr[xx][yy]==AIR&&arr[mx][my]==CHEESE){
+                      // 바깥쪽이므로 안쪽을 탐색할 필요가 없다. 상태만 PREAIR로 변경한다.
+  					check[mx][my]=true;
+  					arr[mx][my]=PREAIR;
+  				}	
+  				if(arr[mx][my]==AIR){
+  					check[mx][my]=true;
+  					q.push({mx,my});					
+  				}
+  			}
+  		}
+  	}
+  }
+  
+  int main(){
+  	ios_base::sync_with_stdio(0);
+      cin.tie(0);
+  	cin>>l>>c;
+  	for(int i=0;i<l;i++){
+  		for(int j=0;j<c;j++){
+  			cin>>arr[i][j];
+  		}
+  	}
+  	while(1){
+  		if(possible()){
+  			break;
+  		}
+  		bfs();
+  		makeair();
+  		result++;
+  	}	
+  	cout << result << "\n";
+      cout << lastcnt << "\n";
+      return 0;
+  	
+  }
+  ```
+
   
 
 ### 느낀점
@@ -374,5 +476,5 @@
 - 백트래킹의 기본 개념과 관련 백준 문제들을 풀어보면서 DFS와 BFS의 개념을 어느정도 잡은 것 같다.
 - 개념이 어렵게 느껴지진 않았지만 막상 구현을 해보니 생각보다 어렵게 느껴졌다. 많은 연습이 필요하다.
 - DP나 정렬 등 접근 방법을 알면 빠르게 (적은 코드 양으로) 풀 수 있는 문제와는 달리 백트래킹은 생각보다 많은 구현량을 요구한다. 개념과 구현이 익숙해 질 때 까지 다양한 유형의 문제를 풀어보자.
-- **2636 치즈**문제가 BFS연습에 매우 좋은 문제였다. 다양한 상태를 위해 enum을 활용하여 배열탐색을 통해 bfs를 2번 돌려서 풀어야 하는 문제였는데 어떻게 접근해야할지 많은 생각을 하게했다. 
-
+- **2636 치즈**문제가 BFS연습에 매우 좋은 문제였다. 다양한 상태를 위해 enum을 활용하여 BFS로 풀어야했고 다양한 접근방법이 있었다. 
+- 많은 시간 고민을 해도 풀리지 않는 문제는 구글링을 통해 코드를 참고하여 공부했었다. 블로그의 설명과 코드에는 내가 생각하지 못한 접근방식과 스킬이 있었다. 때문에 참고한 블로그의 답이 항상 정해이고 최적의, 최선의 코드라고 생각했다. 하지만 이번 **2636 치즈**문제를 통해 코드 리팩토링을 통해 개선될 가능성이 있는 코드도 있다는 것을 알게 되었다. 내가 직접 고민해 개선했다는 점에서 매우 뿌듯했다.
