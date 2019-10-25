@@ -10,7 +10,7 @@ typedef struct
 
 Dir moveDir[4] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
-enum{CHEESE=1, PREAIR, AIR};
+enum{CHEESE=1, PREAIR,AIR};
 int N, M;
 int lastCnt;
 int arr[100][100];
@@ -63,6 +63,13 @@ void BFS1(void){
             }
         }
     }
+    cout<<"\n";
+		for(int i=0;i<N;i++){
+			for(int j=0;j<M;j++){
+				cout<<arr[i][j]<<" ";
+			}
+			cout<<"\n";
+		}
 }
 //곧 녹을 치즈를 표시하는 과정
 void BFS2(void){
@@ -108,6 +115,14 @@ int main(void){
         BFS1();
         BFS2();
         PreairToAir();
+//        cout<<"\n";
+//		for(int i=0;i<N;i++){
+//			for(int j=0;j<M;j++){
+//				cout<<arr[i][j]<<" ";
+//			}
+//			cout<<"\n";
+//		}
+		
         result++;
     }
     cout << result << "\n";
