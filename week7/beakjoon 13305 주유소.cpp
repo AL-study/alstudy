@@ -2,8 +2,9 @@
 #include <climits>
 using namespace std;
 
-int n,edge[100001],ver[100001];
-long long ans,minnum=INT_MAX;
+int n,ver[100001];
+long ans,edge[100001];
+int minnum=INT_MAX;
 
 int main(){
 	cin>>n;
