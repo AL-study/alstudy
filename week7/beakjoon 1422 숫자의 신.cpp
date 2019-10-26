@@ -5,33 +5,9 @@ using namespace std;
 int k,n;
 string str[1001];
 string ans;
-/* 
-	정렬시 숫자가 높은 순으로 정렬합니다. 
-	길이가 다르다면 길이가 작은 수는 그 수의 첫자리부터 반복해서 복사해 추가합니다.
-	ex) 98422 와 97의 비교 => 98422와 97979의 비교
-*/ 
+
 bool compare(string a,string b){
-	int i=0;
-	string tempa="";
-	string tempb="";
-	while(i<a.length()||i<b.length()){
-		if(i>=a.length()){
-			tempa+=a[i%a.length()];
-		}else{
-			tempa+=a[i];
-		}
-		if(i>=b.length()){
-			tempb+=b[i%b.length()];
-		}else{
-			tempb+=b[i];
-		}
-		i++;
-	}
-	if(tempa==tempb){
-		return a+b>b+a;
-	}else{
-		return tempa>tempb;
-	}
+	return a+b>b+a;
 }
 int main(){
 	cin>>k>>n;
