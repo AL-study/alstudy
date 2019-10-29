@@ -473,6 +473,13 @@
 
 - 쉬워보이지만 부쉈을경우, 부수지 않았을 경우에 대해 방문처리를 다르게 해야하고, 이러한 발상을 하기 어려웠던 문제
 
+  - 방문처리의 경우를 나누어 주지 않았을 경우 반례는 다음과 같다.
+    4 7
+    0100010
+    0101010
+    0101010
+    0001010
+
 - 벽을 부쉈을 경우와 부수지 않았을 경우를 나누어 방문배열을 저장해야 하기 때문에 **3차원**배열을 선언해야 한다.
 
 - ```C++
@@ -527,7 +534,7 @@
   		cin>>arr[i];	
   	}
   	bfs();
-  	if(ans==INT_MAX){
+  	if(ans=INT_MAX){
   		cout<<"-1";
   	}else{
   		cout<<ans;
@@ -535,11 +542,81 @@
   }
   ```
 
-- 
 
 
+### 7576. 토마토
 
+-  익은 토마토의 주위에 있는 (4방향에 인접해있는) 익지 않은 토마토는 1일후에 모두 익은 토마토가 된다. 바이러스처럼 퍼져나가는 신기한 능력을 가진 익은 토마토로 (궁금해서 검색해봤지만 역시 실제로 그렇진않다) 전부 변하기 까지의 최소일 수를 구하는문제
+- 익은 토마토, 익지 않은 토마토, 빈 공간 총 3가지의 상태가 배열로 주어진다. 여러상태를 처리하기 위해 enum을 활용했다. (물론 쓰지 않아도 지장없지만 가독성을 높여 이해하기 쉬운 코드로 만들어주자.)
+- 배열을 받고 bfs를 통해 가지를 뻗어 나가는데 시작점은 여러 개 일 수 있다. 따라서 배열을 탐색해 익은(RIPE)상태의 토마토라면 큐에 전부다 넣고 bfs를 시작 하면 된다.
+- 주의사항
+  - exit(1)로 프로그램을 끝내면 런타임에러가 발생한다. exit를 사용하지 않도록 한다. if문을 통해 처리하자.
 
+- ```c++
+  #include <iostream>
+  #include <queue>
+  using namespace std;
+  int n,m,arr[1001][1001],cnt,ans;
+  bool c[1001][1001];
+  enum{
+  	EMPTY=-1,
+  	RAW,
+  	RIPE
+  };
+  typedef struct _MOVE{
+  	int x,y;
+  }MOVE;
+  MOVE movedir[4]={{1,0},{-1,0},{0,1},{0,-1}};
+  
+  void bfs(){
+  	queue<pair<int, pair<int,int> > > q;
+  	for(int i=0;i<n;i++){
+  		for(int j=0;j<m;j++){
+  			if(arr[i][j]==RIPE){
+  				q.push({0,{i,j}});
+  				c[i][j]=true;
+  			}
+  		}
+  	}
+  	while(!q.empty()){
+  		int x=q.front().second.first,y=q.front().second.second;
+  		int cnt=q.front().first;
+  		ans=max(ans,cnt);
+  		q.pop();
+  		for(int i=0;i<4;i++){
+  			int mx=x+movedir[i].x;
+  			int my=y+movedir[i].y;
+  			if(0<=mx && mx<n && 0<=my && my<m){
+  				if(!c[mx][my]&&arr[mx][my]==RAW){
+  					arr[mx][my]=RIPE;
+  					c[mx][my]=true;
+  					q.push({cnt+1,{mx,my}});
+  				}
+  			}
+  		}
+  	}
+  	for(int i=0;i<n;i++){
+  		for(int j=0;j<m;j++){
+  			if(arr[i][j]==RAW){
+                  // exit(1); 주석해제시 런타임에러 발생
+  				ans=-1;
+  			}
+  		}
+  	}
+  	cout<<ans;
+  }
+  int main(){
+  	cin>>m>>n;
+  	for(int i=0;i<n;i++){
+  		for(int j=0;j<m;j++){
+  			cin>>arr[i][j];
+  		}
+  	}
+  	bfs();
+  }
+  ```
+
+  
 
 ### 느낀점
 
