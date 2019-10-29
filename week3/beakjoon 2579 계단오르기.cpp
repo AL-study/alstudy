@@ -4,11 +4,8 @@
 using namespace std;
 
 int n,dp[301],arr[301];
-
 int main(){
-	
 	cin>>n;
-	
 	for(int i=1;i<=n;i++){
 		cin>>arr[i];
 	}
@@ -18,8 +15,5 @@ int main(){
 	for(int i=4;i<=n;i++){
 		dp[i]=max(dp[i-3]+arr[i]+arr[i-1],dp[i-2]+arr[i]);
 	}
-	
 	cout<<dp[n];
-	
-	
 }
