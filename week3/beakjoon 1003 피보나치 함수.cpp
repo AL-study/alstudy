@@ -17,14 +17,11 @@ int main(){
 	for(int i=3;i<41;i++){
 		v[i].first=v[i-1].first+v[i-2].first;
 		v[i].second=v[i-1].second+v[i-2].second;
-		
 	}
 	cin>>n;
-	
 	for(int i=0;i<n;i++){
 		int temp;
 		cin>>temp;
 		cout<<v[temp].first<<" "<<v[temp].second<<"\n";
 	}
-	
 }
