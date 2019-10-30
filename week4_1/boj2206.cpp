@@ -1,71 +1,53 @@
-#include <iostream>
-#include <stdio.h>
-#include <vector>
+#include <cstdio>
 #include <queue>
 
 using namespace std;
 
+struct Info {
+  int x, y, w;
+};
+
 int N, M;
-bool brk = false, chk = false;
-queue<pair<int, int> > route;
-vector<vector<int> > map, visited, moving;
+int map[1001][1001];
+int dist[1001][1001][2];
 
-
-void bfs() {
-  route.push(make_pair(0,0));
-  visited[0][0] = 1;
-  moving[0][0] = 1;
+int bfs() {
+  queue<Info> route;
+  Info info = {0, 0, 0};
+  route.push(info);
+  dist[0][0][0] = 1;
   int dx[4] = {0, 1, 0, -1}, dy[4] = {1, 0, -1, 0};
   while(!route.empty()) {
-    pair<int, int> curr = route.front();
-    int x = curr.first, y = curr.second;
+    int x = route.front().x, y = route.front().y, w = route.front().w;
     route.pop();
-    cout<<x<<" "<<y<<"\n";
-    if(map[x][y]) continue;
     if(x == N-1 && y == M-1) {
-      printf("%d\n", moving[x][y]);
-      return;
+      return dist[x][y][w];
     }
     for(int i=0; i<4; i++) {
       int nx = x+dx[i], ny = y+dy[i];
-      if(nx >= 0 && nx < N && ny >= 0 && y < M) {
-        if(visited[nx][ny] == 0) {
-          if(visited[nx][ny]) {
-            chk = true;
-            map[nx][ny] = 0;
-          }
-          route.push(make_pair(nx, ny));
-          visited[nx][ny] = 1;
-          moving[nx][ny] = moving[x][y] + 1;
-        }
+      if(nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+      if(dist[nx][ny][w]) continue;
+      if(!map[nx][ny]) {
+        dist[nx][ny][w] = dist[x][y][w] + 1;
+        Info ninfo = {nx, ny, w};
+        route.push(ninfo);
+      } else if(!w) {
+        dist[nx][ny][1] = dist[x][y][w] + 1;
+        Info ninfo = {nx, ny, 1};
+        route.push(ninfo);
       }
     }
-    if(chk) brk = true;
   }
-  printf("-1\n");
+  return -1;
 }
 
 int main() {
-  ios_base::sync_with_stdio(false);
-  cin.tie(NULL);
-  
-  int temp;
-  vector<int> row;
-  cin>>N>>M;
+  scanf("%d %d", &N, &M);
   for(int i=0; i<N; i++) {
-    row.clear();
-    row.assign(M,0);
-    visited.push_back(row);
-    moving.push_back(row);
-  }
-  for(int i=0; i<N; i++) {
-    row.clear();
     for(int j=0; j<M; j++) {
-      scanf("%1d", &temp);
-      row.push_back(temp);
+      scanf("%1d", &map[i][j]);
     }
-    map.push_back(row);
   }
-  bfs();
+  printf("%d\n", bfs());
   return 0;
 }
