@@ -231,163 +231,94 @@
 
 
 
+### 2580. 스도쿠
 
+- 스도쿠는 3가지 조건을 만족해야한다.
 
+  1. 같은 행에 같은 숫자가 존재하지 않는다.
+  2. 같은 열에 같은 숫자가 존재하지 않는다.
+  3. 3 X 3 박스안에 같은 숫자가 존재하지 않는다.
 
+- 배열을 받으면서 빈칸(0)일 시 벡터에 인덱스를 따로 저장해 두었다가 DFS를 통해 답을 구했다.
 
-
-
-### 2206 벽 부수고 이동하기 ★
-
-- 벽을 한 번 부술 수 있을 때의 최단 거리를 구하는 문제
-
-- 쉬워보이지만 부쉈을경우, 부수지 않았을 경우에 대해 방문처리를 다르게 해야하고, 이러한 발상을 하기 어려웠던 문제
-
-  - 방문처리의 경우를 나누어 주지 않았을 경우 반례는 다음과 같다.
-    4 7
-    0100010
-    0101010
-    0101010
-    0001010
-
-- 벽을 부쉈을 경우와 부수지 않았을 경우를 나누어 방문배열을 저장해야 하기 때문에 **3차원**배열을 선언해야 한다.
+- 구하는 과정에서 위의 3가지 기준을 충족하는지 판별해야 하고 각 3가지 조건을 모듈화 하였다.
 
 - ```C++
   #include <iostream>
-  #include <queue>
-  #include <cstring>
-  #include <climits>
+  #include <vector>
+  #include <cstdlib>
+   
   using namespace std;
-  int n,m,ans=INT_MAX;
-  string arr[1001];
-  bool c[1001][1001][2];
-  typedef struct _Move{
-  	int x,y;
-  }Move;
-  // 변수이름이 move일 경우 컴파일 에러
-  Move movedir[4]={{1,0},{-1,0},{0,1},{0,-1}}; 
-  void bfs(){
-  	queue<pair<int,pair<int, int> > > q;
-  	queue<int> cq;
-  	q.push(make_pair(1,make_pair(0,0)));
-  	c[0][0][1]=true;
-  	cq.push(1);
-  	while(!q.empty()){
-  		int x=q.front().second.first,y=q.front().second.second;
-  		int crush=q.front().first;
-  		int cnt=cq.front();
-  		if(x==n-1&&y==m-1){
-  			ans=min(cnt,ans);	
-  		}
-  		q.pop();
-  		cq.pop();
-  		for(int i=0;i<4;i++){
-  			int mx=movedir[i].x+x;
-  			int my=movedir[i].y+y;
-  			if(0<=mx&&mx<n&&0<=my&&my<m){
-  				if(arr[mx][my]=='1'&&crush==1){
-  					q.push(make_pair(0,make_pair(mx,my)));
-  					c[mx][my][0]=true;
-  					cq.push(cnt+1);
-  				}else if(arr[mx][my]=='0'&&!c[mx][my][crush]){
-  					q.push(make_pair(crush,make_pair(mx,my)));
-  					c[mx][my][crush]=true;
-  					cq.push(cnt+1);
-  				}
-  			}
-  		}
-  	}
+   
+  int sudoku[9][9];
+  vector<pair<int, int>> arr;
+  bool chk_vertical(int c, int num) {
+      for(int r = 0; r < 9; r ++) {
+          if(sudoku[r][c] == num) {
+              return false;
+          }
+      }
+      return true;
   }
-  int main(){
-  	cin>>n>>m;
-  	for(int i=0;i<n;i++){
-  		cin>>arr[i];	
-  	}
-  	bfs();
-  	if(ans=INT_MAX){
-  		cout<<"-1";
-  	}else{
-  		cout<<ans;
-  	}
+  bool chk_horizontal(int r, int num) {
+      for(int c = 0; c < 9; c ++) {
+          if(sudoku[r][c] == num) {
+              return false;
+          }
+      }
+      return true;
+  }
+  bool chk_square(int r, int c, int num) {
+      r = r / 3;
+      c = c / 3;
+      for(int rr = r * 3; rr < (r * 3) + 3; rr ++) {
+          for(int cc = c * 3 ; cc < (c * 3) + 3; cc ++) {
+              if(sudoku[rr][cc] == num) {
+                  return false;
+              }
+          }
+      }
+      return true;
+  }
+   
+  void dfs(int idx) {
+      if(idx == arr.size()) {
+          for(int i = 0; i < 9; i ++) {
+              for(int j = 0; j < 9; j ++) {
+                  cout << sudoku[i][j] << " ";
+              }
+              cout << "\n";
+          }
+          exit(0);
+      }
+      for(int num = 1; num <= 9; num ++) {
+          int r = arr[idx].first;
+          int c = arr[idx].second;
+          if(chk_vertical(c, num) && chk_horizontal(r, num) && chk_square(r, c, num)) {
+              sudoku[r][c] = num;
+              dfs(idx + 1);
+              sudoku[r][c] = 0;
+          }
+      }
+  }
+   
+  int main() {
+      for(int i = 0; i < 9; i ++) {
+          for(int j = 0; j < 9; j ++) {
+              cin >> sudoku[i][j];
+              if(sudoku[i][j] == 0) {
+                  arr.push_back({ i, j });
+              }
+          }
+      }
+      dfs(0);
+      return 0;
   }
   ```
 
+- #### 참고 출처 : <https://dongyeollee.github.io/2018/09/03/Al/2580/>
 
 
-### 7576. 토마토
-
--  익은 토마토의 주위에 있는 (4방향에 인접해있는) 익지 않은 토마토는 1일후에 모두 익은 토마토가 된다. 바이러스처럼 퍼져나가는 신기한 능력을 가진 익은 토마토로 (궁금해서 검색해봤지만 역시 실제로 그렇진않다) 전부 변하기 까지의 최소일 수를 구하는문제
-- 익은 토마토, 익지 않은 토마토, 빈 공간 총 3가지의 상태가 배열로 주어진다. 여러상태를 처리하기 위해 enum을 활용했다. (물론 쓰지 않아도 지장없지만 가독성을 높여 이해하기 쉬운 코드로 만들어주자.)
-- 배열을 받고 bfs를 통해 가지를 뻗어 나가는데 시작점은 여러 개 일 수 있다. 따라서 배열을 탐색해 익은(RIPE)상태의 토마토라면 큐에 전부다 넣고 bfs를 시작 하면 된다.
-- 주의사항
-  
-- exit(1)로 프로그램을 끝내면 런타임에러가 발생한다. exit를 사용하지 않도록 한다. if문을 통해 처리하자.
-  
-- ```c++
-  #include <iostream>
-  #include <queue>
-  using namespace std;
-  int n,m,arr[1001][1001],cnt,ans;
-  bool c[1001][1001];
-  enum{
-  	EMPTY=-1,
-  	RAW,
-  	RIPE
-  };
-  typedef struct _MOVE{
-  	int x,y;
-  }MOVE;
-  MOVE movedir[4]={{1,0},{-1,0},{0,1},{0,-1}};
-  
-  void bfs(){
-  	queue<pair<int, pair<int,int> > > q;
-  	for(int i=0;i<n;i++){
-  		for(int j=0;j<m;j++){
-  			if(arr[i][j]==RIPE){
-  				q.push({0,{i,j}});
-  				c[i][j]=true;
-  			}
-  		}
-  	}
-  	while(!q.empty()){
-  		int x=q.front().second.first,y=q.front().second.second;
-  		int cnt=q.front().first;
-  		ans=max(ans,cnt);
-  		q.pop();
-  		for(int i=0;i<4;i++){
-  			int mx=x+movedir[i].x;
-  			int my=y+movedir[i].y;
-  			if(0<=mx && mx<n && 0<=my && my<m){
-  				if(!c[mx][my]&&arr[mx][my]==RAW){
-  					arr[mx][my]=RIPE;
-  					c[mx][my]=true;
-  					q.push({cnt+1,{mx,my}});
-  				}
-  			}
-  		}
-  	}
-  	for(int i=0;i<n;i++){
-  		for(int j=0;j<m;j++){
-  			if(arr[i][j]==RAW){
-                  // exit(1); 주석해제시 런타임에러 발생
-  				ans=-1;
-  			}
-  		}
-  	}
-  	cout<<ans;
-  }
-  int main(){
-  	cin>>m>>n;
-  	for(int i=0;i<n;i++){
-  		for(int j=0;j<m;j++){
-  			cin>>arr[i][j];
-  		}
-  	}
-  	bfs();
-  }
-  ```
-
-  
 
 ### 느낀점
 
