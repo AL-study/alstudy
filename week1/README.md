@@ -19,3 +19,50 @@
 - 기본적으로 알아야할 자료구조 (스택, 큐, 덱 등)를 이용한 문제를 풀었다.
 - 이미 알고있는 개념이지만 문제를 풀면서 왜 이 자료구조가 필요한지, 어떠한 상황에서 유용한지에 대해 다시금 개념을 잡았다.
 - 자료구조 역시 STL에서 대부분 지원해주며, map이라는 자료구조도 지원해주기 때문에 key와 value를 이용한 저장이 가능하다. 
+
+
+
+### 1016. 제곱ㄴㄴ수 ★★
+
+- 에라토스테네스의 체를 응용한 문제.
+
+- 제곱의 수로 나누어떨어지면 해당 배열을 1로 바꾸고 배열을 탐색하며 0일 경우 갯수를 세어 출력한다.
+
+- 그러나 다음과 같은 문제점이 있다.
+
+  - 범위가 1,000,000,000,000 (1조)이기 때문에 int형의 범위를 초과한다.
+  - 범위가 1,000,000,000,000 (1조)이기 때문에 그 만큼의 배열을 선언 할 수 없다.
+
+- 따라서 다음과 같이 접근하여 해결한다.
+
+  - long long 형으로 선언하여 int를 초과하는 범위까지 계산한다.
+  - max-min은 최대 1,000,000 이기때문에  사실상 알고 싶은 수의 갯수는 100만 이하이다. 따라서 그사이의 값만 계산하여 구해준다.
+
+- ```c++
+  #include <iostream>
+  #include <math.h>  // sqrt()
+  using namespace std;
+  long long minnum,maxnum,cnt;
+  bool arr[1000001];
+  int main(){
+  	cin>>minnum>>maxnum;
+  	for(long long i=2;i<=sqrt(maxnum);i++){
+  		long long x=minnum/(i*i);
+  		if(minnum%(i*i)!=0){
+  			x++;
+  		}
+  		while(x*i*i<=maxnum){
+  			arr[x*i*i-minnum]=true;
+  			x++;
+  		}
+  	}
+  	for(int i=0;i<=maxnum-minnum;i++){
+  		if(!arr[i]){
+  			cnt++;
+  		}
+  	}
+  	cout<<cnt;
+  }
+  ```
+
+  
