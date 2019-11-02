@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <queue>
 #include <cstdio>
@@ -17,18 +16,18 @@ vector < pi > vc[100001];
  
 // 중량을 탐색할 BFS 함수
 bool bfs(int weight){
-	queue <int> que;    
+    queue <int> que;    
     que.push(start);
     visited[start] = 1;
     
     while(!que.empty()){
-    	
+        
         int cur = que.front();
         
         que.pop();
         
         if(cur == des){
-        	return true;
+            return true;
         }
         
         for(int i=0; i<vc[cur].size(); i++){
@@ -36,8 +35,8 @@ bool bfs(int weight){
             int next = vc[cur][i].second;
             
             if(visited[next] != 1 && weight <= nVal){
-        	    visited[next] = 1;
-            	que.push(next);
+                visited[next] = 1;
+                que.push(next);
             
             }
 
@@ -58,7 +57,7 @@ int bs(){
         if(bfs(mid)){
             begin = mid+1;
         }else{
-        	
+            
             last = mid-1;
         }
     }
