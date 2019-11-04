@@ -6,91 +6,72 @@
 using namespace std;
 
 int arr[9][9];
-vector<int> v[9];
-vector<int> h[9];
 
-void siz() {
-	printf("size\n");
-	for (int i = 0; i < 9; i++) {
-		printf("%d ", h[i].size());
+bool k = false;
+
+bool check(int map[9][9], int i, int j) {
+	bool v[10] = { false };
+	bool h[10] = { false };
+	for (int x = 0; x < 9; x++) {
+		if (v[map[i][x]] && map[i][x] != 0) return false;
+		if (h[map[x][j]] && map[x][j] != 0) return false;
+		v[map[i][x]] = true;
+		h[map[x][j]] = true;
 	}
-	printf("\n");
-	for (int j = 0; j < 9; j++) {
-		printf("%d ", v[j].size());
-	}printf("\n");
+	int y = (i / 3)*3;
+	int x = (j / 3)*3;
+	bool c[10] = { false };
+	for (int a = y; a < y + 3; a++) {
+		for (int b = x; b < x + 3; b++) {
+			if (c[map[a][b]] && map[a][b] != 0) return false;
+			c[map[a][b]] = true;
+		}
+	}
+	return true;
 }
 
-void findone() {
-
-	for (int i = 0; i < 9; i++) {
-		if (h[i].size() == 1) {
+void dfs(int map[9][9], int cnt) {
+	if (cnt == 0) {
+		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				if (arr[i][j] == 0) {
-					arr[i][j] = h[i].front();
-					h[i].pop_back();
+				arr[i][j] = map[i][j];
+			}
+		}
+		k = true;
+		return;
+	}
+	if (k) return;
+	int y, x;
+	for (y = 0; y < 9; y++) {
+		for (x = 0; x < 9; x++) {
+			if (map[y][x] == 0) {
+				for (int n = 1; n < 10; n++) {
+					map[y][x] = n;
+					if (check(map, y, x)) {	
+						dfs(map, cnt - 1);
+					}
+					map[y][x] = 0;
 				}
 			}
+			if (map[y][x] == 0) return;
 		}
 	}
 
-	for (int j = 0; j < 9; j++) {
-		if (v[j].size() == 1) {
-			for (int i = 0; i < 9; i++) {
-				if (arr[i][j] == 0) {
-					arr[i][j] = v[j].front();
-					v[j].pop_back();
-				}
-			}
-		}
-	}
-}
-
-void addv() {
-	for (int i = 0; i < 9; i++) {
-		int check[9] = { 0 };
-		for (int j = 0; j < 9; j++) {
-			if (arr[i][j]) check[arr[i][j] - 1] = 1;
-		}
-		for (int j = 0; j < 9; j++) {
-			if (!check[j]) {
-				h[i].push_back(j + 1);
-			}
-		}
-	}
-
-	for (int j = 0; j < 9; j++) {
-		int check[9] = { 0 };
-		for (int i = 0; i < 9; i++) {
-			if (arr[i][j]) check[arr[i][j] - 1] = 1;
-		}
-		for (int i = 0; i < 9; i++) {
-			if (!check[i]) {
-				v[j].push_back(i + 1);
-			}
-		}
-	}
 }
 
 int main() {
 
+	int map[9][9];
+	int cnt = 0;
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			cin >> arr[i][j];
+			cin >> map[i][j];
+			if (map[i][j] == 0) cnt++;
 		}
 	}
-	addv();
-	siz();
-	findone();
-	printf("\n\n");
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			printf("%d ", arr[i][j]);
-		}
-		printf("\n");
-	}
-	siz();
-	findone();
-	printf("\n\n");
+	
+	dfs(map, cnt);
+
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			printf("%d ", arr[i][j]);
@@ -98,7 +79,6 @@ int main() {
 		printf("\n");
 	}
 
-	siz();
 
 	return 0;
 }
